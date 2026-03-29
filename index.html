@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FRC Team 11270 Nova</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png" />
+  <link rel="icon" href="img/favicon.ico" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            teamBlue: 'var(--team-blue)',
+            teamYellow: 'var(--team-yellow)',
+            ink: 'var(--ink)',
+            mist: 'var(--mist)'
+          },
+          boxShadow: {
+            glow: '0 20px 60px rgba(15, 23, 42, 0.18)'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root {
+      --team-blue: #1677ff;
+      --team-yellow: #ffd447;
+      --ink: #0f172a;
+      --mist: #eef4ff;
+      --step--1: clamp(0.88rem, 0.84rem + 0.18vw, 1rem);
+      --step-0: clamp(1rem, 0.93rem + 0.35vw, 1.2rem);
+      --step-1: clamp(1.25rem, 1.08rem + 0.78vw, 1.7rem);
+      --step-2: clamp(1.56rem, 1.25rem + 1.4vw, 2.4rem);
+      --step-3: clamp(2rem, 1.46rem + 2.35vw, 3.4rem);
+      --space-s: clamp(0.75rem, 0.62rem + 0.5vw, 1rem);
+      --space-m: clamp(1rem, 0.78rem + 1vw, 1.6rem);
+      --space-l: clamp(1.5rem, 1.1rem + 1.8vw, 2.5rem);
+      --space-xl: clamp(2rem, 1.4rem + 2.8vw, 4rem);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-size: var(--step-0);
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(22, 119, 255, 0.22), transparent 32%),
+        radial-gradient(circle at top right, rgba(255, 212, 71, 0.28), transparent 24%),
+        linear-gradient(180deg, #f9fbff 0%, #edf4ff 48%, #ffffff 100%);
+    }
+
+    .section-title {
+      font-size: var(--step-2);
+      line-height: 1.05;
+    }
+
+    .hero-title {
+      font-size: var(--step-3);
+      line-height: 0.95;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(12px);
+    }
+
+    .carousel-track {
+      width: 100%;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      scroll-padding-inline: 0;
+      box-sizing: border-box;
+    }
+
+    .carousel-track::-webkit-scrollbar {
+      display: none;
+    }
+
+    .carousel-slide {
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      flex: 0 0 100%;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .carousel-slide figure {
+      margin: 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .carousel-slide img {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .carousel-page[aria-current="true"] {
+      border-color: var(--team-blue) !important;
+      background-color: var(--team-blue) !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 0 3px rgba(22, 119, 255, 0.16);
+    }
+  </style>
+</head>
+
+<body class="antialiased selection:bg-teamYellow selection:text-ink">
+  <header class="sticky top-0 z-50 border-b border-white/60 bg-white/75 backdrop-blur-xl">
+    <div class="relative mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+      <a href="#top" class="flex items-center gap-3 font-semibold tracking-wide text-ink">
+        <img src="img/logo.png" alt="FRC Team 11270 Nova logo" class="h-10 w-10 rounded-2xl object-cover shadow-glow" />
+        <span>
+          <span class="block text-sm uppercase text-teamBlue">FRC Team 11270</span>
+          <span class="block text-base">Nova Robotics</span>
+        </span>
+      </a>
+
+      <button id="menu-button" type="button"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-xl border-0 bg-transparent text-slate-700 outline-none ring-0 transition hover:text-teamBlue focus:outline-none focus-visible:outline-none focus-visible:ring-0 md:hidden"
+        aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle navigation menu">
+        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+
+      <nav id="primary-nav"
+        class="absolute right-4 top-full z-40 mt-2 hidden w-56 flex-col rounded-2xl border border-slate-200 bg-white p-4 text-sm font-medium shadow-glow md:static md:mt-0 md:flex md:w-auto md:flex-row md:items-center md:gap-6 md:border-0 md:bg-transparent md:p-0 md:shadow-none">
+        <a href="#about" class="block w-full py-2 transition hover:text-teamBlue md:w-auto md:py-0">About Us</a>
+        <a href="#competition" class="block w-full py-2 transition hover:text-teamBlue md:w-auto md:py-0">Competition</a>
+        <a href="#community" class="block w-full py-2 transition hover:text-teamBlue md:w-auto md:py-0">Community</a>
+        <a href="#sponsors" class="block w-full py-2 transition hover:text-teamBlue md:w-auto md:py-0">Sponsors</a>
+        <a href="#contacts" class="block w-full py-2 transition hover:text-teamBlue md:w-auto md:py-0">Contacts</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section
+      class="mx-auto grid max-w-6xl gap-10 px-4 pb-16 pt-10 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:pb-24 lg:pt-20">
+      <div class="flex flex-col justify-center">
+        <h1 class="hero-title max-w-3xl font-black tracking-tight text-ink">
+          FIRST Robotics Team 11270 <span class="text-teamBlue">Nova</span>
+        </h1>
+        <p class="mt-6 max-w-2xl text-base leading-8 text-slate-700 sm:text-lg">
+          We are a student-led FIRST Robotics Competition team created inside Canadian STEM & AI Academy in Markham,
+          Ontario.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a href="#about"
+            class="rounded-full bg-teamBlue px-6 py-3 font-semibold text-white shadow-glow transition hover:-translate-y-0.5">Meet
+            the Team</a>
+          <a href="#sponsors"
+            class="rounded-full border border-slate-300 bg-white px-6 py-3 font-semibold text-ink transition hover:border-teamBlue hover:text-teamBlue">Support
+            Our Season</a>
+        </div>
+      </div>
+
+      <figure class="glass overflow-hidden rounded-[2rem] shadow-glow">
+        <img src="img/banner-01.jpg" alt="Team 11270 robot for FRC 2026"
+          class="block aspect-[4/3] w-full object-cover" />
+        <figcaption class="px-5 py-4 text-sm font-semibold text-slate-700">Our robot for the 2026 season</figcaption>
+      </figure>
+    </section>
+
+    <section id="about" class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+      <div class="mb-8 max-w-2xl">
+        <p class="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-teamBlue">About Us</p>
+        <h2 class="section-title font-black text-ink">A student team built at CSAA
+        </h2>
+      </div>
+      <div class="space-y-6">
+        <div id="about-carousel"
+          class="glass rounded-[2rem] pb-4 shadow-glow sm:pb-5">
+          <ol class="carousel-track m-0 list-none flex snap-x snap-mandatory gap-0 overflow-x-auto scroll-smooth p-0"
+            aria-label="About Us photo carousel">
+            <li id="about-slide-1" class="carousel-slide min-w-full shrink-0 overflow-hidden rounded-t-[1.5rem] rounded-b-none bg-slate-950">
+              <figure class="relative m-0">
+                <img src="img/about-01.jpg" alt="Team 11270 photo 1"
+                  class="block aspect-[16/9] w-full object-contain" />
+                <figcaption
+                  class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/75 to-transparent px-4 py-3 text-sm font-semibold text-white">
+                  With our sister team
+                </figcaption>
+              </figure>
+            </li>
+            <li id="about-slide-2" class="carousel-slide min-w-full shrink-0 overflow-hidden rounded-t-[1.5rem] rounded-b-none bg-slate-950">
+              <figure class="relative m-0">
+                <img src="img/about-02.jpg" alt="Team 11270 photo 2"
+                  class="block aspect-[16/9] w-full object-contain" />
+                <figcaption
+                  class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/75 to-transparent px-4 py-3 text-sm font-semibold text-white">
+                  At the alliance station
+                </figcaption>
+              </figure>
+            </li>
+            <li id="about-slide-3" class="carousel-slide min-w-full shrink-0 overflow-hidden rounded-t-[1.5rem] rounded-b-none bg-slate-950">
+              <figure class="relative m-0">
+                <img src="img/about-03.jpg" alt="Team 11270 photo 3"
+                  class="block aspect-[16/9] w-full object-contain" />
+                <figcaption
+                  class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/75 to-transparent px-4 py-3 text-sm font-semibold text-white">
+                  With our mentors
+                </figcaption>
+              </figure>
+            </li>
+            <li id="about-slide-4" class="carousel-slide min-w-full shrink-0 overflow-hidden rounded-t-[1.5rem] rounded-b-none bg-slate-950">
+              <figure class="relative m-0">
+                <img src="img/about-04.jpg" alt="Team 11270 photo 4"
+                  class="block aspect-[16/9] w-full object-contain" />
+                <figcaption
+                  class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/75 to-transparent px-4 py-3 text-sm font-semibold text-white">
+                  Assembling the robot
+                </figcaption>
+              </figure>
+            </li>
+            <li id="about-slide-5" class="carousel-slide min-w-full shrink-0 overflow-hidden rounded-t-[1.5rem] rounded-b-none bg-slate-950">
+              <figure class="relative m-0">
+                <img src="img/about-05.jpg" alt="Team 11270 photo 5"
+                  class="block aspect-[16/9] w-full object-contain" />
+                <figcaption
+                  class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/75 to-transparent px-4 py-3 text-sm font-semibold text-white">
+                  In the game
+                </figcaption>
+              </figure>
+            </li>
+          </ol>
+          <div class="px-4 pt-4 sm:px-5">
+            <nav class="flex flex-wrap items-center justify-center gap-2" aria-label="About carousel pages">
+              <button type="button" data-carousel-page data-carousel-target="about-slide-1"
+                class="carousel-page rounded-full border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-ink transition hover:border-teamBlue hover:text-teamBlue">1</button>
+              <button type="button" data-carousel-page data-carousel-target="about-slide-2"
+                class="carousel-page rounded-full border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-ink transition hover:border-teamBlue hover:text-teamBlue">2</button>
+              <button type="button" data-carousel-page data-carousel-target="about-slide-3"
+                class="carousel-page rounded-full border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-ink transition hover:border-teamBlue hover:text-teamBlue">3</button>
+              <button type="button" data-carousel-page data-carousel-target="about-slide-4"
+                class="carousel-page rounded-full border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-ink transition hover:border-teamBlue hover:text-teamBlue">4</button>
+              <button type="button" data-carousel-page data-carousel-target="about-slide-5"
+                class="carousel-page rounded-full border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-ink transition hover:border-teamBlue hover:text-teamBlue">5</button>
+            </nav>
+          </div>
+        </div>
+
+        <p class="max-w-4xl leading-8 text-slate-700">
+          We are Team 11270 Nova, created inside Canadian STEM & AI Academy in Markham, Ontario in the fall of 2025. Our boys team is
+          made up of students in grades 9 through 12, and we work closely with our sister team 9785 to grow robotics
+          opportunities and STEM involvement in our community.
+        </p>
+      </div>
+    </section>
+
+    <section id="competition" class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+      <div class="mb-8 max-w-2xl">
+        <p class="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-teamBlue">Competition</p>
+        <h2 class="section-title font-black text-ink">The FIRST Robotics Competition</h2>
+        <p class="mt-4 leading-8 text-slate-700">The FIRST Robotics Competition (FRC) is a global program where high school teams design, build, and compete in new engineering challenges each year. Below, each season highlights our robot, events, and lessons learned.</p>
+      </div>
+
+      <div class="space-y-8">
+        <article class="rounded-[2rem] border border-white/70 bg-white/75 p-6 shadow-glow">
+          <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-teamBlue">2026 Season</p>
+              <h3 class="mt-2 text-2xl font-black text-ink">Latest season</h3>
+            </div>
+          </div>
+
+          <div class="mt-6 grid gap-5 md:grid-cols-2">
+            <article class="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm">
+              <img src="img/rookie_all_star_humber_2026.jpg" alt="Team 11270 at Humber Polytechnic event"
+                class="aspect-[16/10] w-full object-cover" />
+              <div class="p-5">
+                <h4 class="mt-2 text-xl font-bold text-ink">Humber Polytechnic Event</h4>
+                <p class="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-teamBlue">March 12 - 14, 2026</p>
+                <p class="mt-3 leading-7 text-slate-700">At our first event, we overcame intake challenges to rank 9th in qualifications. Team 4039 selected us for Alliance 4 with Team 9562, and we made it to Round 3.</p>
+                <p class="mt-3 text-sm font-semibold text-teamYellow">&#x1F3C5; Rookie All-Star Award</p>
+              </div>
+            </article>
+
+            <article class="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm">
+              <img src="img/event_winner_north_bay_2026.jpg" alt="Team 11270 at North Bay event"
+                class="aspect-[16/10] w-full object-cover" />
+              <div class="p-5">
+                <h4 class="mt-2 text-xl font-bold text-ink">North Bay Event</h4>
+                <p class="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-teamBlue">March 20 - 22, 2026</p>
+                <p class="mt-3 leading-7 text-slate-700">After improving our intake, we ranked 3rd in qualifications and formed Alliance 2 with Team 9785 and Team 2013. We were grateful to finish as event champions.</p>
+                <p class="mt-3 text-sm font-semibold text-teamYellow">&#x1F3C5; Judges' Award</p>
+                <p class="mt-3 text-sm font-semibold text-teamYellow">&#x1F3C5; District Event Winner</p>
+              </div>
+            </article>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="community" class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+      <div class="mb-8 max-w-2xl">
+        <p class="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-teamBlue">Community</p>
+        <h2 class="section-title font-black text-ink">STEM matters</h2>
+        <p class="mt-4 leading-8 text-slate-700">We promote STEM because it not only drives economic growth but also fosters rational thinking in society.</p>
+      </div>
+      <div class="space-y-6">
+        <article class="overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-glow">
+          <div class="grid gap-0 lg:grid-cols-[0.95fr_1.05fr]">
+            <img src="img/community_donation_march_2026.jpg" alt="Uganda donation event photo"
+              class="h-full min-h-64 w-full object-cover" />
+            <div class="p-6">
+              <h3 class="mt-3 text-2xl font-bold text-ink">STEM for Uganda</h3>
+                <p class="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-teamBlue">March 14 - 15, 2026</p>
+              <p class="mt-3 leading-7 text-slate-700">We hosted a community book and toy sale, raising funds and collecting supplies to support a robotics student team in Uganda. The initiative helped expand access to STEM learning and hands-on robotics opportunities for local students.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <article class="overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-glow">
+          <div class="grid gap-0 lg:grid-cols-[0.95fr_1.05fr]">
+            <img src="img/community_school_march_2026.jpg" alt="ommunity STEM demo event photo"
+              class="h-full min-h-64 w-full object-cover" />
+            <div class="p-6">
+              <h3 class="mt-3 text-2xl font-bold text-ink">STEM Outreach at CSAA March Camp</h3>
+                <p class="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-teamBlue">March 19, 2026</p>
+              <p class="mt-3 leading-7 text-slate-700">We introduced our robot and the FIRST Robotics Competition to 40 students (ages 4–14) at the CSAA March Camp, sparking curiosity and excitement for STEM through hands-on learning.</p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="sponsors" class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+      <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div class="max-w-2xl">
+          <p class="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-teamBlue">Sponsors</p>
+          <h2 class="section-title font-black text-ink">Help us launch every season.</h2>
+        </div>
+        <a href="#contacts"
+          class="w-fit rounded-full border border-teamBlue/20 bg-white px-5 py-3 font-semibold text-teamBlue transition hover:border-teamBlue">Become
+          a Sponsor</a>
+      </div>
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div
+          class="glass flex min-h-36 items-center justify-center rounded-[1.75rem] border border-white/70 p-6 text-center shadow-glow">
+          <img src="img/csaa-logo.png" alt="Canadian STEM & AI Academy logo" class="max-h-20 w-auto object-contain" />
+        </div>
+      </div>
+    </section>
+
+    <section id="contacts" class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+      <div class="rounded-[2rem] bg-slate-950 p-8 text-white shadow-glow">
+        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-teamYellow">Contacts</p>
+        <h2 class="mt-4 text-4xl font-black">Let's build something inspiring together.</h2>
+          <div class="mt-8 grid gap-4 sm:grid-cols-3">
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <p class="text-sm uppercase tracking-[0.18em] text-slate-400">Email</p>
+              <a href="mailto:Nova11270FRC@gmail.com" class="mt-2 block text-lg font-semibold text-white transition hover:text-teamYellow">Nova11270FRC@gmail.com</a>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <p class="text-sm uppercase tracking-[0.18em] text-slate-400">Instagram</p>
+              <a href="https://www.instagram.com/frc11270/"
+                class="mt-2 block text-lg font-semibold text-white transition hover:text-teamYellow">@frc11270</a>
+            </div>
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <p class="text-sm uppercase tracking-[0.18em] text-slate-400">Location</p>
+            <p class="mt-2 text-lg font-semibold text-white">401 Bentley St Unit 1-2, Markham, Ontario</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-200/80 bg-white/70">
+    <div
+      class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 text-sm text-slate-600 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+      <p>FIRST Robotics Competition Team 11270 Nova.</p>
+    </div>
+  </footer>
+
+  <script>
+    const menuButton = document.getElementById('menu-button');
+    const primaryNav = document.getElementById('primary-nav');
+
+    if (menuButton && primaryNav) {
+      menuButton.addEventListener('click', () => {
+        const isOpen = !primaryNav.classList.contains('hidden');
+        primaryNav.classList.toggle('hidden');
+        menuButton.setAttribute('aria-expanded', String(!isOpen));
+      });
+
+      primaryNav.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+          if (window.innerWidth < 768) {
+            primaryNav.classList.add('hidden');
+            menuButton.setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+    }
+
+    const aboutCarousel = document.getElementById('about-carousel');
+    if (aboutCarousel) {
+      const track = aboutCarousel.querySelector('.carousel-track');
+      const slides = Array.from(aboutCarousel.querySelectorAll('.carousel-slide'));
+      const pages = Array.from(aboutCarousel.querySelectorAll('[data-carousel-page]'));
+      const slideById = new Map(slides.map((slide) => [slide.id, slide]));
+
+      const setActivePage = (slideId) => {
+        pages.forEach((page) => {
+          const isActive = page.getAttribute('data-carousel-target') === slideId;
+          page.setAttribute('aria-current', isActive ? 'true' : 'false');
+        });
+      };
+
+      if (slides.length) {
+        setActivePage(slides[0].id);
+      }
+
+      pages.forEach((page) => {
+        page.addEventListener('click', () => {
+          const targetId = page.getAttribute('data-carousel-target');
+          const targetSlide = targetId ? slideById.get(targetId) : null;
+
+          if (track && targetSlide) {
+            track.scrollTo({
+              left: targetSlide.offsetLeft,
+              behavior: 'smooth',
+            });
+            setActivePage(targetSlide.id);
+          }
+        });
+      });
+
+      if (track && 'IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          const visibleEntry = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+          if (visibleEntry) {
+            setActivePage(visibleEntry.target.id);
+          }
+        }, {
+          root: track,
+          threshold: 0.6,
+        });
+
+        slides.forEach((slide) => observer.observe(slide));
+      }
+    }
+  </script>
+</body>
+
+</html>

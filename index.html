@@ -81,8 +81,8 @@
     :root {
       --team-primary: #1677ff;
       --team-secondary: #9E9ADC;
-      --ink: #0f172a;
-      --mist: #eef4ff;
+      --ink: #eef6ff;
+      --mist: #091426;
       --step--1: clamp(0.88rem, 0.84rem + 0.18vw, 1rem);
       --step-0: clamp(1rem, 0.93rem + 0.35vw, 1.2rem);
       --step-1: clamp(1.25rem, 1.08rem + 0.78vw, 1.7rem);
@@ -103,9 +103,132 @@
       font-size: var(--step-0);
       color: var(--ink);
       background:
-        radial-gradient(circle at top left, rgba(22, 119, 255, 0.22), transparent 32%),
-        radial-gradient(circle at top right, rgba(255, 212, 71, 0.28), transparent 24%),
-        linear-gradient(180deg, #f9fbff 0%, #edf4ff 48%, #ffffff 100%);
+        radial-gradient(circle at 18% 22%, rgba(73, 41, 108, 0.28), transparent 34%),
+        radial-gradient(circle at 82% 70%, rgba(25, 92, 108, 0.2), transparent 36%),
+        #02030a;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(circle at 50% -10%, rgba(22, 119, 255, 0.16), transparent 36%),
+        linear-gradient(180deg, rgba(2, 3, 10, 0.08), rgba(2, 3, 10, 0.76));
+      pointer-events: none;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        linear-gradient(115deg, transparent 0 46%, rgba(255, 255, 255, 0.05) 47%, transparent 48% 100%),
+        radial-gradient(circle at 50% 50%, transparent 0, rgba(2, 3, 10, 0.42) 72%, rgba(2, 3, 10, 0.82) 100%);
+      opacity: 0.55;
+      pointer-events: none;
+    }
+
+    .universe-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      background: #02030a;
+      pointer-events: none;
+    }
+
+    header {
+      border-color: rgba(150, 190, 255, 0.22) !important;
+      background: rgba(5, 10, 26, 0.72) !important;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+    }
+
+    main,
+    footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    .text-ink,
+    .text-slate-700,
+    .text-slate-600 {
+      color: rgba(238, 246, 255, 0.9) !important;
+    }
+
+    .text-slate-400 {
+      color: rgba(195, 215, 255, 0.72) !important;
+    }
+
+    .text-teamPrimary {
+      color: #74c7ff !important;
+    }
+
+    .text-teamSecondary {
+      color: #c8bfff !important;
+    }
+
+    .bg-white,
+    .glass {
+      background: rgba(8, 18, 42, 0.7) !important;
+    }
+
+    .glass,
+    section article,
+    #contacts > div,
+    #primary-nav {
+      border-color: rgba(146, 190, 255, 0.18) !important;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    section article,
+    #contacts > div {
+      background: linear-gradient(145deg, rgba(9, 20, 48, 0.78), rgba(5, 10, 28, 0.9)) !important;
+    }
+
+    .border-slate-200,
+    .border-slate-300,
+    .border-white\/70,
+    .border-white\/60 {
+      border-color: rgba(146, 190, 255, 0.2) !important;
+    }
+
+    .shadow-glow {
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.4), 0 0 42px rgba(22, 119, 255, 0.12) !important;
+    }
+
+    a.bg-teamPrimary {
+      background: linear-gradient(135deg, #1677ff, #39d3ff 55%, #b9a7ff) !important;
+      color: #ffffff !important;
+      box-shadow: 0 16px 38px rgba(22, 119, 255, 0.32), 0 0 28px rgba(57, 211, 255, 0.2);
+    }
+
+    a.bg-white,
+    button.bg-white {
+      color: rgba(238, 246, 255, 0.92) !important;
+    }
+
+    a.bg-white:hover,
+    button.bg-white:hover {
+      border-color: rgba(116, 199, 255, 0.75) !important;
+      color: #9de6ff !important;
+    }
+
+    figure.bg-slate-950,
+    .bg-slate-950 {
+      background-color: rgba(2, 6, 23, 0.9) !important;
+    }
+
+    footer {
+      border-color: rgba(146, 190, 255, 0.2) !important;
+      background: rgba(5, 10, 26, 0.72) !important;
     }
 
     .section-title {
@@ -119,7 +242,7 @@
     }
 
     .glass {
-      background: rgba(255, 255, 255, 0.72);
+      background: rgba(8, 18, 42, 0.7);
       backdrop-filter: blur(12px);
     }
 
@@ -161,10 +284,41 @@
       color: #ffffff !important;
       box-shadow: 0 0 0 3px rgba(22, 119, 255, 0.16);
     }
+
+    .sponsor-logo-plate {
+      display: flex;
+      width: 100%;
+      min-height: 6.25rem;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.82);
+      border-radius: 1rem;
+      background: #ffffff !important;
+      padding: 1.15rem 1.35rem;
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.92);
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .sponsor-logo-plate:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.3), 0 0 24px rgba(116, 199, 255, 0.16);
+    }
+
+    .sponsor-logo-plate img {
+      max-width: 100%;
+      mix-blend-mode: multiply;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .universe-canvas {
+        opacity: 0.82;
+      }
+    }
   </style>
 </head>
 
 <body class="antialiased selection:bg-teamSecondary selection:text-ink">
+  <canvas id="universe" class="universe-canvas" aria-hidden="true"></canvas>
   <header class="sticky top-0 z-50 border-b border-white/60 bg-white/75 backdrop-blur-xl">
     <div class="relative mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
       <a href="#top" class="flex items-center gap-3 font-semibold tracking-wide text-ink">
@@ -309,7 +463,7 @@
 
         <p class="max-w-4xl leading-8 text-slate-700">
           We are Team 11270 Nova, created inside Canadian STEM & AI Academy in Markham, Ontario in the fall of 2025. Our boys team is
-          made up of students in grades 9 through 12, and we work closely with our sister team 9785 to grow robotics
+          made up of students in grades 8 through 12, and we work closely with our sister team 9785 to grow robotics
           opportunities and STEM involvement in our community.
         </p>
       </div>
@@ -422,7 +576,8 @@
       <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <div
           class="glass flex min-h-36 items-center justify-center rounded-[1.75rem] border border-white/70 p-6 text-center shadow-glow">
-          <a href="https://csaafuture.com/" target="_blank" rel="noopener noreferrer" aria-label="Canadian STEM & AI Academy website">
+          <a href="https://csaafuture.com/" target="_blank" rel="noopener noreferrer" aria-label="Canadian STEM & AI Academy website"
+            class="sponsor-logo-plate">
             <img src="img/csaa-logo.png" alt="Canadian STEM & AI Academy logo" width="548" height="145"
               loading="lazy" decoding="async" class="max-h-20 w-auto object-contain" />
           </a>
@@ -436,7 +591,7 @@
         <div
           class="glass flex min-h-36 items-center justify-center rounded-[1.75rem] border border-white/70 p-6 text-center shadow-glow">
           <a href="https://www.meritsweeprite.com/" target="_blank" rel="noopener noreferrer"
-            aria-label="Sweeprite website">
+            aria-label="Sweeprite website" class="sponsor-logo-plate">
             <img src="img/sweeprite.png" alt="Sweeprite logo" width="240" height="120" loading="lazy" decoding="async"
               class="max-h-20 w-auto object-contain" />
           </a>
@@ -444,7 +599,7 @@
         <div
           class="glass flex min-h-36 items-center justify-center rounded-[1.75rem] border border-white/70 p-6 text-center shadow-glow">
           <a href="https://www.fareastsolar.com/" target="_blank" rel="noopener noreferrer"
-            aria-label="Far East Solar website">
+            aria-label="Far East Solar website" class="sponsor-logo-plate">
             <img src="img/far_east_solar.png" alt="Far East Solar logo" width="240" height="120" loading="lazy"
               decoding="async" class="max-h-20 w-auto object-contain" />
           </a>
@@ -483,6 +638,205 @@
   </footer>
 
   <script>
+    (() => {
+      const canvas = document.getElementById('universe');
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const ctx = canvas.getContext('2d');
+      const stars = Array.from({ length: 340 }, (_, index) => ({
+        x: hash(index * 2.13),
+        y: hash(index * 4.81),
+        r: 0.35 + hash(index * 8.17) * 1.45,
+        a: 0.16 + hash(index * 5.41) * 0.62,
+        speed: 0.05 + hash(index * 6.29) * 0.16,
+        hue: hash(index * 9.73),
+      }));
+      const comets = [
+        { offset: 0, y: 0.18, size: 1 },
+        { offset: 0.38, y: 0.52, size: 0.75 },
+        { offset: 0.72, y: 0.34, size: 0.56 },
+      ];
+      let frameHandle = 0;
+      let width = 0;
+      let height = 0;
+      let start = performance.now();
+
+      function hash(value) {
+        const raw = Math.sin(value * 127.1) * 43758.5453123;
+        return raw - Math.floor(raw);
+      }
+
+      function resize() {
+        const ratio = Math.min(window.devicePixelRatio || 1, 2);
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = Math.max(1, Math.floor(width * ratio));
+        canvas.height = Math.max(1, Math.floor(height * ratio));
+        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      }
+
+      function drawGlow(x, y, radius, color) {
+        const glow = ctx.createRadialGradient(x, y, 0, x, y, radius);
+        glow.addColorStop(0, color);
+        glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      function drawGalaxy(x, y, radius, rotation, colorA, colorB) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(rotation);
+        ctx.scale(1.55, 0.48);
+        drawGlow(0, 0, radius, colorA);
+
+        for (let arm = 0; arm < 2; arm += 1) {
+          ctx.beginPath();
+          for (let i = 0; i < 90; i += 1) {
+            const t = i / 89;
+            const angle = t * Math.PI * 2.2 + arm * Math.PI;
+            const distance = radius * 0.08 + t * radius * 0.84;
+            const px = Math.cos(angle) * distance;
+            const py = Math.sin(angle) * distance * 0.45;
+
+            if (i === 0) {
+              ctx.moveTo(px, py);
+            } else {
+              ctx.lineTo(px, py);
+            }
+          }
+          ctx.strokeStyle = colorB;
+          ctx.lineWidth = Math.max(1, radius * 0.025);
+          ctx.shadowBlur = radius * 0.12;
+          ctx.shadowColor = colorB;
+          ctx.stroke();
+        }
+
+        ctx.restore();
+      }
+
+      function drawComet(progress, y, size) {
+        const x = width * (1.18 - progress * 1.55);
+        const headY = height * y + Math.sin(progress * Math.PI * 2) * height * 0.08;
+        const trail = 170 * size;
+        const gradient = ctx.createLinearGradient(x, headY, x + trail, headY - trail * 0.24);
+        gradient.addColorStop(0, 'rgba(226, 248, 255, 0.95)');
+        gradient.addColorStop(0.22, 'rgba(99, 214, 255, 0.34)');
+        gradient.addColorStop(1, 'rgba(99, 214, 255, 0)');
+
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 2.4 * size;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(x, headY);
+        ctx.lineTo(x + trail, headY - trail * 0.24);
+        ctx.stroke();
+        drawGlow(x, headY, 12 * size, 'rgba(229, 249, 255, 0.72)');
+      }
+
+      function drawBurningStar(x, y, radius, elapsed) {
+        const pulse = prefersReducedMotion ? 1 : 0.92 + Math.sin(elapsed * 1.5) * 0.08;
+        const flare = prefersReducedMotion ? 0 : Math.sin(elapsed * 2.2) * radius * 0.08;
+
+        drawGlow(x, y, radius * 4.4 * pulse, 'rgba(255, 121, 38, 0.13)');
+        drawGlow(x, y, radius * 2.5 * pulse, 'rgba(255, 191, 64, 0.18)');
+
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(elapsed * 0.06);
+
+        for (let ray = 0; ray < 18; ray += 1) {
+          const angle = (Math.PI * 2 * ray) / 18;
+          const length = radius * (1.55 + Math.sin(elapsed * 1.7 + ray * 1.31) * 0.34) + flare;
+          const inner = radius * 0.62;
+          const spread = 0.09 + (ray % 3) * 0.018;
+          const gradient = ctx.createRadialGradient(0, 0, radius * 0.1, 0, 0, length);
+
+          gradient.addColorStop(0, 'rgba(255, 248, 183, 0.7)');
+          gradient.addColorStop(0.36, 'rgba(255, 138, 35, 0.22)');
+          gradient.addColorStop(1, 'rgba(255, 80, 16, 0)');
+
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.moveTo(Math.cos(angle - spread) * inner, Math.sin(angle - spread) * inner);
+          ctx.lineTo(Math.cos(angle) * length, Math.sin(angle) * length);
+          ctx.lineTo(Math.cos(angle + spread) * inner, Math.sin(angle + spread) * inner);
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        ctx.restore();
+
+        const core = ctx.createRadialGradient(x, y, 0, x, y, radius * 1.18 * pulse);
+        core.addColorStop(0, 'rgba(255, 255, 234, 1)');
+        core.addColorStop(0.25, 'rgba(255, 224, 107, 0.98)');
+        core.addColorStop(0.62, 'rgba(255, 116, 28, 0.82)');
+        core.addColorStop(1, 'rgba(163, 32, 20, 0)');
+        ctx.fillStyle = core;
+        ctx.beginPath();
+        ctx.arc(x, y, radius * 1.22 * pulse, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = 'rgba(255, 240, 185, 0.52)';
+        ctx.lineWidth = Math.max(1, radius * 0.055);
+        ctx.beginPath();
+        ctx.arc(x, y, radius * (1.42 + Math.sin(elapsed * 1.3) * 0.06), 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      function paint(now) {
+        const elapsed = (now - start) * 0.001;
+        ctx.clearRect(0, 0, width, height);
+
+        const base = ctx.createRadialGradient(width * 0.22, height * 0.16, 0, width * 0.5, height * 0.56, Math.max(width, height));
+        base.addColorStop(0, '#151336');
+        base.addColorStop(0.42, '#071426');
+        base.addColorStop(1, '#02030a');
+        ctx.fillStyle = base;
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.globalCompositeOperation = 'screen';
+        drawGlow(width * 0.2, height * 0.3, width * 0.26, 'rgba(88, 111, 197, 0.16)');
+        drawGlow(width * 0.76, height * 0.68, width * 0.22, 'rgba(216, 82, 157, 0.13)');
+        drawGlow(width * 0.54, height * 0.2, width * 0.14, 'rgba(252, 190, 94, 0.16)');
+        drawGalaxy(width * 0.26, height * 0.42, Math.min(width, height) * 0.19, elapsed * 0.025, 'rgba(88, 128, 226, 0.13)', 'rgba(143, 205, 255, 0.24)');
+        drawGalaxy(width * 0.76, height * 0.58, Math.min(width, height) * 0.14, -elapsed * 0.02, 'rgba(208, 89, 170, 0.11)', 'rgba(255, 188, 119, 0.18)');
+        drawBurningStar(width * 0.82, height * 0.2, Math.min(width, height) * 0.035, elapsed);
+
+        stars.forEach((star, index) => {
+          const drift = prefersReducedMotion ? 0 : elapsed * star.speed;
+          const x = ((star.x + drift * 0.012) % 1) * width;
+          const y = ((star.y + drift * 0.006) % 1) * height;
+          const twinkle = prefersReducedMotion ? 1 : 0.75 + Math.sin(elapsed * (1.2 + star.speed * 4) + index) * 0.25;
+          const tint = star.hue > 0.78 ? '255, 214, 151' : star.hue > 0.48 ? '210, 232, 255' : '151, 220, 255';
+
+          ctx.fillStyle = `rgba(${tint}, ${star.a * twinkle})`;
+          ctx.beginPath();
+          ctx.arc(x, y, star.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        if (!prefersReducedMotion) {
+          comets.forEach((comet) => {
+            const progress = (elapsed * 0.011 + comet.offset) % 1;
+            drawComet(progress, comet.y, comet.size);
+          });
+        }
+
+        ctx.globalCompositeOperation = 'source-over';
+
+        if (!prefersReducedMotion) {
+          frameHandle = requestAnimationFrame(paint);
+        }
+      }
+
+      resize();
+      window.addEventListener('resize', resize);
+      frameHandle = requestAnimationFrame(paint);
+      window.addEventListener('pagehide', () => cancelAnimationFrame(frameHandle), { once: true });
+    })();
+
     const menuButton = document.getElementById('menu-button');
     const primaryNav = document.getElementById('primary-nav');
 

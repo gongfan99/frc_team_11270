@@ -141,7 +141,10 @@
       width: 100vw;
       height: 100vh;
       background: #02030a;
+      backface-visibility: hidden;
       pointer-events: none;
+      transform: translate3d(0, 0, 0);
+      will-change: transform;
     }
 
     header {
@@ -184,7 +187,6 @@
     #contacts > div,
     #primary-nav {
       border-color: rgba(146, 190, 255, 0.18) !important;
-      backdrop-filter: blur(16px);
       box-shadow: 0 24px 70px rgba(0, 0, 0, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.06);
     }
 
@@ -243,7 +245,6 @@
 
     .glass {
       background: rgba(8, 18, 42, 0.7);
-      backdrop-filter: blur(12px);
     }
 
     .carousel-track {
@@ -314,12 +315,13 @@
         opacity: 0.82;
       }
     }
+
   </style>
 </head>
 
 <body class="antialiased selection:bg-teamSecondary selection:text-ink">
   <canvas id="universe" class="universe-canvas" aria-hidden="true"></canvas>
-  <header class="sticky top-0 z-50 border-b border-white/60 bg-white/75 backdrop-blur-xl">
+  <header class="sticky top-0 z-50 border-b border-white/60 bg-white/75">
     <div class="relative mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
       <a href="#top" class="flex items-center gap-3 font-semibold tracking-wide text-ink">
         <img src="img/logo.png" alt="FIRST Robotics Team 11270 Nova logo" width="465" height="416"
@@ -641,6 +643,8 @@
     (() => {
       const canvas = document.getElementById('universe');
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const hasTouch = window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0;
+      const motionScale = prefersReducedMotion ? 0.35 : 1;
       const ctx = canvas.getContext('2d');
       const stars = Array.from({ length: 340 }, (_, index) => ({
         x: hash(index * 2.13),
@@ -651,16 +655,17 @@
         hue: hash(index * 9.73),
       }));
       const comets = [
-        { offset: 0, y: 0.18, size: 1 },
-        { offset: 0.38, y: 0.52, size: 0.75 },
-        { offset: 0.72, y: 0.34, size: 0.56 },
+        { offset: 0, y: 0.18, size: 0.55, dx: -1.0, dy: -0.18, tint: '99, 214, 255' },
+        { offset: 0.38, y: 0.52, size: 0.42, dx: -0.82, dy: 0.44, tint: '255, 202, 122' },
+        { offset: 0.72, y: 0.34, size: 0.34, dx: 0.72, dy: -0.5, tint: '194, 185, 255' },
       ];
       let frameHandle = 0;
       let width = 0;
       let height = 0;
       let start = performance.now();
       let lastPaint = 0;
-      const targetFrameMs = 1000 / 12;
+      let touchResumeTimer = 0;
+      const targetFrameMs = 1000 / 8;
 
       function hash(value) {
         const raw = Math.sin(value * 127.1) * 43758.5453123;
@@ -668,7 +673,7 @@
       }
 
       function resize() {
-        const ratio = Math.min(window.devicePixelRatio || 1, 1.25);
+        const ratio = hasTouch ? 1 : Math.min(window.devicePixelRatio || 1, 1.25);
         width = window.innerWidth;
         height = window.innerHeight;
         canvas.width = Math.max(1, Math.floor(width * ratio));
@@ -786,31 +791,39 @@
         ctx.restore();
       }
 
-      function drawComet(progress, y, size) {
-        const x = width * (1.18 - progress * 1.55);
-        const headY = height * y + Math.sin(progress * Math.PI * 2) * height * 0.08;
-        const trail = 170 * size;
-        const gradient = ctx.createLinearGradient(x, headY, x + trail, headY - trail * 0.24);
-        gradient.addColorStop(0, 'rgba(226, 248, 255, 0.95)');
-        gradient.addColorStop(0.22, 'rgba(99, 214, 255, 0.34)');
-        gradient.addColorStop(1, 'rgba(99, 214, 255, 0)');
+      function drawComet(progress, comet) {
+        const directionLength = Math.hypot(comet.dx, comet.dy) || 1;
+        const dirX = comet.dx / directionLength;
+        const dirY = comet.dy / directionLength;
+        const travel = Math.max(width, height) * 1.55;
+        const startX = width * (0.5 - dirX * 0.72);
+        const startY = height * comet.y - dirY * height * 0.42;
+        const x = startX + dirX * travel * (progress - 0.5);
+        const headY = startY + dirY * travel * (progress - 0.5) + Math.sin(progress * Math.PI * 2) * height * 0.035;
+        const trail = 115 * comet.size;
+        const tailX = x - dirX * trail;
+        const tailY = headY - dirY * trail;
+        const gradient = ctx.createLinearGradient(x, headY, tailX, tailY);
+        gradient.addColorStop(0, 'rgba(238, 250, 255, 0.46)');
+        gradient.addColorStop(0.24, `rgba(${comet.tint}, 0.16)`);
+        gradient.addColorStop(1, `rgba(${comet.tint}, 0)`);
 
         ctx.strokeStyle = gradient;
-        ctx.lineWidth = 2.4 * size;
+        ctx.lineWidth = 1.35 * comet.size;
         ctx.lineCap = 'round';
         ctx.beginPath();
         ctx.moveTo(x, headY);
-        ctx.lineTo(x + trail, headY - trail * 0.24);
+        ctx.lineTo(tailX, tailY);
         ctx.stroke();
-        drawGlow(x, headY, 12 * size, 'rgba(229, 249, 255, 0.72)');
+        drawGlow(x, headY, 6.5 * comet.size, 'rgba(229, 249, 255, 0.32)');
       }
 
       function drawBurningStar(x, y, radius, elapsed) {
-        const pulse = prefersReducedMotion ? 1 : 0.92 + Math.sin(elapsed * 1.5) * 0.08;
-        const flare = prefersReducedMotion ? 0 : Math.sin(elapsed * 2.2) * radius * 0.08;
+        const pulse = 0.92 + Math.sin(elapsed * 1.5 * motionScale) * 0.08 * motionScale;
+        const flare = Math.sin(elapsed * 2.2 * motionScale) * radius * 0.08 * motionScale;
 
-        drawGlow(x, y, radius * 4.4 * pulse, 'rgba(255, 121, 38, 0.13)');
-        drawGlow(x, y, radius * 2.5 * pulse, 'rgba(255, 191, 64, 0.18)');
+        drawGlow(x, y, radius * 4.4 * pulse, 'rgba(255, 121, 38, 0.065)');
+        drawGlow(x, y, radius * 2.5 * pulse, 'rgba(255, 191, 64, 0.09)');
 
         ctx.save();
         ctx.translate(x, y);
@@ -823,8 +836,8 @@
           const spread = 0.09 + (ray % 3) * 0.018;
           const gradient = ctx.createRadialGradient(0, 0, radius * 0.1, 0, 0, length);
 
-          gradient.addColorStop(0, 'rgba(255, 248, 183, 0.7)');
-          gradient.addColorStop(0.36, 'rgba(255, 138, 35, 0.22)');
+          gradient.addColorStop(0, 'rgba(255, 248, 183, 0.35)');
+          gradient.addColorStop(0.36, 'rgba(255, 138, 35, 0.11)');
           gradient.addColorStop(1, 'rgba(255, 80, 16, 0)');
 
           ctx.fillStyle = gradient;
@@ -839,25 +852,58 @@
         ctx.restore();
 
         const core = ctx.createRadialGradient(x, y, 0, x, y, radius * 1.18 * pulse);
-        core.addColorStop(0, 'rgba(255, 255, 234, 1)');
-        core.addColorStop(0.25, 'rgba(255, 224, 107, 0.98)');
-        core.addColorStop(0.62, 'rgba(255, 116, 28, 0.82)');
+        core.addColorStop(0, 'rgba(255, 255, 234, 0.5)');
+        core.addColorStop(0.25, 'rgba(255, 224, 107, 0.49)');
+        core.addColorStop(0.62, 'rgba(255, 116, 28, 0.41)');
         core.addColorStop(1, 'rgba(163, 32, 20, 0)');
         ctx.fillStyle = core;
         ctx.beginPath();
         ctx.arc(x, y, radius * 1.22 * pulse, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.strokeStyle = 'rgba(255, 240, 185, 0.52)';
+        ctx.strokeStyle = 'rgba(255, 240, 185, 0.26)';
         ctx.lineWidth = Math.max(1, radius * 0.055);
         ctx.beginPath();
         ctx.arc(x, y, radius * (1.42 + Math.sin(elapsed * 1.3) * 0.06), 0, Math.PI * 2);
         ctx.stroke();
       }
 
-      function paint(now) {
-        if (!prefersReducedMotion && now - lastPaint < targetFrameMs) {
+      function startAnimation() {
+        if (!frameHandle) {
           frameHandle = requestAnimationFrame(paint);
+        }
+      }
+
+      function stopAnimation() {
+        if (frameHandle) {
+          cancelAnimationFrame(frameHandle);
+          frameHandle = 0;
+        }
+      }
+
+      function pauseForTouch() {
+        window.clearTimeout(touchResumeTimer);
+        stopAnimation();
+      }
+
+      function resumeAfterTouch() {
+        window.clearTimeout(touchResumeTimer);
+        touchResumeTimer = window.setTimeout(() => {
+          if (document.hidden) {
+            return;
+          }
+
+          lastPaint = 0;
+          start = performance.now();
+          startAnimation();
+        }, 180);
+      }
+
+      function paint(now) {
+        frameHandle = 0;
+
+        if (now - lastPaint < targetFrameMs) {
+          startAnimation();
           return;
         }
 
@@ -876,15 +922,15 @@
         drawGlow(width * 0.2, height * 0.3, width * 0.26, 'rgba(88, 111, 197, 0.16)');
         drawGlow(width * 0.76, height * 0.68, width * 0.22, 'rgba(216, 82, 157, 0.13)');
         drawGlow(width * 0.54, height * 0.2, width * 0.14, 'rgba(252, 190, 94, 0.16)');
-        drawGalaxy(width * 0.26, height * 0.42, Math.min(width, height) * 0.19, elapsed * 0.025, 'rgba(88, 128, 226, 0.13)', 'rgba(143, 205, 255, 0.24)');
-        drawGalaxy(width * 0.76, height * 0.58, Math.min(width, height) * 0.14, -elapsed * 0.02, 'rgba(208, 89, 170, 0.11)', 'rgba(255, 188, 119, 0.18)');
+        drawGalaxy(width * 0.26, height * 0.42, Math.min(width, height) * 0.19, elapsed * 0.025 * motionScale, 'rgba(88, 128, 226, 0.13)', 'rgba(143, 205, 255, 0.24)');
+        drawGalaxy(width * 0.76, height * 0.58, Math.min(width, height) * 0.14, -elapsed * 0.02 * motionScale, 'rgba(208, 89, 170, 0.11)', 'rgba(255, 188, 119, 0.18)');
         drawBurningStar(width * 0.82, height * 0.2, Math.min(width, height) * 0.035, elapsed);
 
         stars.forEach((star, index) => {
-          const drift = prefersReducedMotion ? 0 : elapsed * star.speed;
+          const drift = elapsed * star.speed * motionScale;
           const x = ((star.x + drift * 0.012) % 1) * width;
           const y = ((star.y + drift * 0.006) % 1) * height;
-          const twinkle = prefersReducedMotion ? 1 : 0.75 + Math.sin(elapsed * (1.2 + star.speed * 4) + index) * 0.25;
+          const twinkle = 0.75 + Math.sin(elapsed * (1.2 + star.speed * 4) * motionScale + index) * 0.25 * motionScale;
           const tint = star.hue > 0.78 ? '255, 214, 151' : star.hue > 0.48 ? '210, 232, 255' : '151, 220, 255';
 
           ctx.fillStyle = `rgba(${tint}, ${star.a * twinkle})`;
@@ -893,24 +939,39 @@
           ctx.fill();
         });
 
-        if (!prefersReducedMotion) {
-          comets.forEach((comet) => {
-            const progress = (elapsed * 0.008 + comet.offset) % 1;
-            drawComet(progress, comet.y, comet.size);
-          });
-        }
+        comets.forEach((comet) => {
+          const progress = (elapsed * 0.008 * motionScale + comet.offset) % 1;
+          drawComet(progress, comet);
+        });
 
         ctx.globalCompositeOperation = 'source-over';
-
-        if (!prefersReducedMotion) {
-          frameHandle = requestAnimationFrame(paint);
-        }
+        startAnimation();
       }
 
       resize();
       window.addEventListener('resize', resize);
-      frameHandle = requestAnimationFrame(paint);
-      window.addEventListener('pagehide', () => cancelAnimationFrame(frameHandle), { once: true });
+      window.addEventListener('touchstart', pauseForTouch, { passive: true });
+      window.addEventListener('touchmove', pauseForTouch, { passive: true });
+      window.addEventListener('touchend', resumeAfterTouch, { passive: true });
+      window.addEventListener('touchcancel', resumeAfterTouch, { passive: true });
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          window.clearTimeout(touchResumeTimer);
+          stopAnimation();
+          return;
+        }
+
+        lastPaint = 0;
+        start = performance.now();
+        startAnimation();
+      });
+      window.addEventListener('pagehide', stopAnimation);
+      window.addEventListener('pageshow', () => {
+        lastPaint = 0;
+        start = performance.now();
+        startAnimation();
+      });
+      startAnimation();
     })();
 
     const menuButton = document.getElementById('menu-button');

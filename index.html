@@ -806,11 +806,33 @@
         const directionLength = Math.hypot(comet.dx, comet.dy) || 1;
         const dirX = comet.dx / directionLength;
         const dirY = comet.dy / directionLength;
-        const travel = Math.max(width, height) * 1.55;
-        const startX = width * (0.5 - dirX * 0.72);
-        const startY = height * comet.y - dirY * height * 0.42;
-        const x = startX + dirX * travel * (progress - 0.5);
-        const headY = startY + dirY * travel * (progress - 0.5) + Math.sin(progress * Math.PI * 2) * height * 0.035;
+        const anchorX = width * 0.5;
+        const anchorY = height * comet.y;
+        const visibleTarget = 0.68;
+        let minDistance = -Infinity;
+        let maxDistance = Infinity;
+
+        function clipPath(point, direction, minValue, maxValue) {
+          if (Math.abs(direction) < 0.000001) {
+            return point >= minValue && point <= maxValue;
+          }
+
+          const entry = (minValue - point) / direction;
+          const exit = (maxValue - point) / direction;
+          minDistance = Math.max(minDistance, Math.min(entry, exit));
+          maxDistance = Math.min(maxDistance, Math.max(entry, exit));
+          return minDistance <= maxDistance;
+        }
+
+        clipPath(anchorX, dirX, 0, width);
+        clipPath(anchorY, dirY, 0, height);
+
+        const visibleDistance = Math.max(1, maxDistance - minDistance);
+        const pathCenter = (minDistance + maxDistance) * 0.5;
+        const travel = visibleDistance / visibleTarget;
+        const distance = pathCenter + travel * (progress - 0.5);
+        const x = anchorX + dirX * distance;
+        const headY = anchorY + dirY * distance + Math.sin(progress * Math.PI * 2) * height * 0.035;
         const trail = 115 * comet.size;
         const tailX = x - dirX * trail;
         const tailY = headY - dirY * trail;

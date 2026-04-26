@@ -12,7 +12,8 @@ branch, Cloudflare automatically deploys the updated site.
 ## Project Structure
 
 This is a plain static website. There is no web framework, package manager,
-build command, or server-side code.
+build command, or server-side code. Tailwind CSS is loaded from the CDN and
+used for most page styling.
 
 - `index.html` contains the main website content and page layout.
 - `img/` contains images, icons, logos, and other visual assets.

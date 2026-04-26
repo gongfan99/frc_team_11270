@@ -658,13 +658,15 @@
         { offset: 0, y: 0.18, size: 0.55, dx: -1.0, dy: -0.18, tint: '99, 214, 255' },
         { offset: 0.38, y: 0.52, size: 0.42, dx: -0.82, dy: 0.44, tint: '255, 202, 122' },
         { offset: 0.72, y: 0.34, size: 0.34, dx: 0.72, dy: -0.5, tint: '194, 185, 255' },
+        { offset: 0.18, y: 0.74, size: 0.3, dx: 0.92, dy: 0.22, tint: '156, 232, 255' },
+        { offset: 0.58, y: 0.08, size: 0.26, dx: -0.34, dy: 0.96, tint: '255, 180, 142' },
+        { offset: 0.86, y: 0.63, size: 0.28, dx: -0.62, dy: -0.72, tint: '214, 242, 255' },
       ];
       let frameHandle = 0;
       let width = 0;
       let height = 0;
       let start = performance.now();
       let lastPaint = 0;
-      let touchResumeTimer = 0;
       const targetFrameMs = 1000 / 8;
 
       function hash(value) {
@@ -674,8 +676,17 @@
 
       function resize() {
         const ratio = hasTouch ? 1 : Math.min(window.devicePixelRatio || 1, 1.25);
-        width = window.innerWidth;
-        height = window.innerHeight;
+        const nextWidth = window.innerWidth;
+        const nextHeight = window.innerHeight;
+        const widthChanged = Math.abs(nextWidth - width) > 2;
+        const minorAddressBarResize = hasTouch && !widthChanged && Math.abs(nextHeight - height) < 140;
+
+        if (width && height && minorAddressBarResize) {
+          return;
+        }
+
+        width = nextWidth;
+        height = nextHeight;
         canvas.width = Math.max(1, Math.floor(width * ratio));
         canvas.height = Math.max(1, Math.floor(height * ratio));
         ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
@@ -881,24 +892,6 @@
         }
       }
 
-      function pauseForTouch() {
-        window.clearTimeout(touchResumeTimer);
-        stopAnimation();
-      }
-
-      function resumeAfterTouch() {
-        window.clearTimeout(touchResumeTimer);
-        touchResumeTimer = window.setTimeout(() => {
-          if (document.hidden) {
-            return;
-          }
-
-          lastPaint = 0;
-          start = performance.now();
-          startAnimation();
-        }, 180);
-      }
-
       function paint(now) {
         frameHandle = 0;
 
@@ -950,13 +943,8 @@
 
       resize();
       window.addEventListener('resize', resize);
-      window.addEventListener('touchstart', pauseForTouch, { passive: true });
-      window.addEventListener('touchmove', pauseForTouch, { passive: true });
-      window.addEventListener('touchend', resumeAfterTouch, { passive: true });
-      window.addEventListener('touchcancel', resumeAfterTouch, { passive: true });
       document.addEventListener('visibilitychange', () => {
         if (document.hidden) {
-          window.clearTimeout(touchResumeTimer);
           stopAnimation();
           return;
         }
